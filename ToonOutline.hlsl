@@ -46,30 +46,19 @@ struct VS_OUT
 //───────────────────────────────────────
 // 頂点シェーダ
 //───────────────────────────────────────
-VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
+float4 VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL):SV_POSITION
 {
 	//ピクセルシェーダーへ渡す情報
-	VS_OUT outData = (VS_OUT)0;
+	//VS_OUT outData = (VS_OUT)0;
 
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
-	pos = pos + normal * 0.1;
-	outData.pos = mul(pos, matWVP);
-	outData.uv = uv;
 	normal.w = 0;
-	normal = mul(normal, matNormal);
-	normal = normalize(normal);
-	outData.normal = normal;
-
-	float4 light = normalize(lightPosition);
-	light = normalize(light);
-
-	outData.color = saturate(dot(normal, light));
-	float4 posw = mul(pos, matW);
-	outData.eyev = eyePosition - posw;
+	pos = pos + normal * 0.05;
+	pos = mul(pos, matWVP);
 
 	//まとめて出力
-	return outData;
+	return pos;
 }
 
 //───────────────────────────────────────
@@ -77,42 +66,6 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambentSource = float4(0.2, 0.2, 0.2, 1.0);
-	float4 diffuse;
-	float4 ambient;
-	float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
-	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))),8);
-
-	float2 uv;
-
-	uv.x = inData.color.x;
-	uv.y = 0;
-
-	float4 tI = g_toon_texture.Sample(g_sampler, uv);
-
-	if (isTextured == 0)
-	{
-		diffuse = lightSource * diffuseColor * tI;
-		ambient = lightSource * diffuseColor * ambientColor;
-	}
-	else
-	{
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * tI;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
-	}
-
-	return diffuse + ambient + specular;
-
-	//if (abs(dot(inData.normal, normalize(inData.eyev))) < 0.1)
-	//{
-	//	return float4(0, 0, 0, 0);
-	//}
-	//else
-	//{
-	//	return float4(1, 1, 1, 0);
-	//}
-
+	return float4(0, 0, 0, 1);
 	//return g_texture.Sample(g_sampler, inData.uv);
 }
