@@ -6,5 +6,3 @@ public:
 	SphereCollider(float _radius);
 	float GetRadius() { return(radius_); }
 };
-
-

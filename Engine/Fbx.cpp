@@ -101,6 +101,29 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 		}
 	}
 
+	for (int i = 0; i < polygonCount_; i++)
+	{
+		mesh->GetElementTangentCount(); 
+		int sIndex = mesh->GetPolygonVertexIndex(i);
+		FbxGeometryElementTangent* t = mesh->GetElementTangent(0);
+		if (t)
+		{
+			FbxVector4 tangent = t->GetDirectArray().GetAt(sIndex).mData;
+			for (int j = 0; j < 3; j++)
+			{
+				int index = mesh->GetPolygonVertices()[sIndex * j];
+				vertices[index].tangent = { (float)tangent[0], (float)tangent[1], (float)tangent[2], (float)tangent[3] };
+			}
+		}
+		else
+		{
+			for (int j = 0; j < 3; j++)
+			{
+				int index
+			}
+		}
+	}
+
 	//頂点バッファ
 	HRESULT hr;
 	D3D11_BUFFER_DESC bd_vertex;
@@ -227,8 +250,6 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		}
 
 
-
-
 		//テクスチャ情報
 		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
 
@@ -258,16 +279,49 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			pMaterialList_[i].pTexture = nullptr;
 			//マテリアルの色
 		}
+
+		//ノーマルマップ用テクスチャ
+		{
+			//テクスチャ情報
+			FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sNormalMap);
+
+			//テクスチャの数数
+			int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+
+			//テクスチャあり
+			if (fileTextureCount)
+			{
+				FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
+				const char* textureFilePath = textureInfo->GetRelativeFileName();
+
+				//ファイル名+拡張だけにする
+				char name[_MAX_FNAME];	//ファイル名
+				char ext[_MAX_EXT];	//拡張子
+				_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
+				wsprintf(name, "%s%s", name, ext);
+
+				//ファイルからテクスチャ作成
+				pMaterialList_[i].pNormalTexture = new Texture;
+				HRESULT hr = pMaterialList_[i].pTexture->Load(name);
+				assert(hr == S_OK);
+			}
+			//テクスチャ無し
+			else
+			{
+				pMaterialList_[i].pNormalTexture = nullptr;
+				//マテリアルの色
+			}
+		}
 	}
 }
 
 void Fbx::Draw(Transform& transform)
 {
-	Direct3D::SetShader(SHADER_OUTLINE);
-
+	//Direct3D::SetShader(SHADER_OUTLINE);
+	Direct3D::SetShader(SHADER_NORMALMAP);
 	transform.Calclation();//トランスフォームを計算
-	for (int j = 0; j < 2; j++) 
-	{
+	//for (int j = 0; j < 2; j++)
+	//{
 		for (int i = 0; i < materialCount_; i++)
 		{
 			//コンスタントバッファに情報を渡す
@@ -311,6 +365,11 @@ void Fbx::Draw(Transform& transform)
 				ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pTexture->GetSRV();
 				Direct3D::pContext_->PSSetShaderResources(0, 1, &pSRV);
 			}
+			if (pMaterialList_[i].pNormalTexture)
+			{
+				ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pNormalTexture->GetSRV();
+				Direct3D::pContext_->PSSetShaderResources(2, 1, &pSRV);
+			}
 
 			ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
 			Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
@@ -320,9 +379,7 @@ void Fbx::Draw(Transform& transform)
 			Direct3D::pContext_->DrawIndexed(indexCount_[i], 0, 0);
 		}
 		Direct3D::SetShader(SHADER_TOON);
-	}
-
-
+	//}
 }
 
 void Fbx::Release()

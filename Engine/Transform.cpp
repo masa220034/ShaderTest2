@@ -45,4 +45,3 @@ XMMATRIX Transform::GetNormalMatrix()
 {
     return matRotate_ * XMMatrixInverse(nullptr, matScale_);
 }
-
