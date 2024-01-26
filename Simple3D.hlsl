@@ -4,7 +4,7 @@
 Texture2D		g_texture : register(t0);	//テクスチャー
 SamplerState	g_sampler : register(s0);	//サンプラー
 
-Texture2D		g_toon_texture : register(t1);
+//Texture2D		g_toon_texture : register(t1);
 
 //───────────────────────────────────────
 // コンスタントバッファ
@@ -91,12 +91,12 @@ float4 PS(VS_OUT inData) : SV_Target
 	//
 	//float4 tI = 0.1*step(n1, inData.color) + 0.3*step(n2, inData.color) 
 	//	      + 0.3*step(n3, inData.color) + 0.4*step(n4, inData.color);
-	float2 uv;
+	//float2 uv;
 
-	uv.x = inData.color.x;
-	uv.y = 0;
+	//uv.x = inData.color.x;
+	//uv.y = 0;
 
-	float4 tI = g_toon_texture.Sample(g_sampler, uv);
+	//float4 tI = g_toon_texture.Sample(g_sampler, uv);
 
 
 	if (isTextured == 0)
@@ -109,12 +109,12 @@ float4 PS(VS_OUT inData) : SV_Target
 		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * tI;
 		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
 	}
-	////return diffuse + ambient + specular;
-	float NV = dot(inData.normal, normalize(inData.eyev));
-	if (abs(NV) < 0.3)
-		return float4(0, 0, 0, 0);
-	else
-		return diffuse + ambient + specular;
+	return diffuse + ambient + specular;
+	//float NV = dot(inData.normal, normalize(inData.eyev));
+	//if (abs(NV) < 0.3)
+	//	return float4(0, 0, 0, 0);
+	//else
+	//	return diffuse + ambient + specular;
 
 	//return g_texture.Sample(g_sampler, inData.uv);
 }

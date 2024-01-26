@@ -20,8 +20,6 @@ cbuffer gmodel:register(b0)
 	float		shininess;
 	int		    isTextured;		 //テクスチャーが貼られているかどうか
 	int         isNormalMap;     //ノーマルマップがあるかどうか
-
-
 };
 
 cbuffer gmodel:register(b1)
@@ -29,8 +27,6 @@ cbuffer gmodel:register(b1)
 	float4		lightPosition;
 	float4		eyePosition;
 };
-
-
 
 //───────────────────────────────────────
 // 頂点シェーダー出力＆ピクセルシェーダー入力データ構造体
@@ -44,7 +40,7 @@ struct VS_OUT
 	float4 normal	:POSITION2;
 	float4 light    :POSITION3;
 	float4 color	:POSITION4;	//色（明るさ）
-	
+
 };
 
 //───────────────────────────────────────
@@ -86,7 +82,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
 	light = normalize(light);
 
 	outData.color = mul(normal, light);
-	
+
 	outData.light.x = dot(light, tangent); //接空間の光源ベクトル
 	outData.light.y = dot(light, binormal);
 	outData.light.z = dot(light, normal);
@@ -139,18 +135,18 @@ float4 PS(VS_OUT inData) : SV_Target
 	else
 	{
 		float4 NL = saturate(dot(inData.normal, normalize(lightPosition)));
-	    float4 reflection = reflect(normalize(-lightPosition), inData.normal);
-	    float4 specular = pow(saturate(dot(reflection, normalize(inData.eyev))), shininess) * specularColor;
-	    if (isTextured == 0)
-	    {
-		    diffuse = lightSource * diffuseColor * inData.Color;
-		    ambient = lightSource * diffuseColor * ambientColor;
-	    }
-	    else
-	    {
-		    diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.Color;
-		    ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
-	    }
+		float4 reflection = reflect(normalize(-lightPosition), inData.normal);
+		float4 specular = pow(saturate(dot(reflection, normalize(inData.eyev))), shininess) * specularColor;
+		if (isTextured == 0)
+		{
+			diffuse = lightSource * diffuseColor * inData.Color;
+			ambient = lightSource * diffuseColor * ambientColor;
+		}
+		else
+		{
+			diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.Color;
+			ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
+		}
 		return diffuse + ambient + specular;
-    }
+	}
 }

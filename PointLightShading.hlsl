@@ -20,8 +20,6 @@ cbuffer gmodel:register(b1)
 	float4		eyePosition;
 };
 
-
-
 struct PS_IN
 {
 	float4 pos  : SV_POSITION;	//位置
@@ -30,7 +28,6 @@ struct PS_IN
 	float4 normal	:POSITION2;
 	float4 light	:POSITION3;
 };
-
 
 //───────────────────────────────────────
 // 頂点シェーダ
