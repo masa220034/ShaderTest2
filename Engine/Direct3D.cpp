@@ -164,14 +164,14 @@ HRESULT Direct3D::InitShader()
 	{
 		return E_FAIL;
 	}
-	if (FAILED(InitToonShade()))
+	/*if (FAILED(InitToonShade()))
 	{
 		return E_FAIL;
 	}
 	if (FAILED(InitToonOutline()))
 	{
 		return E_FAIL;
-	}
+	}*/
 	if (FAILED(InitNormalMap()))
 	{
 		return E_FAIL;
@@ -321,7 +321,7 @@ HRESULT Direct3D::InitShader2D()
 	return S_OK;
 }
 //InitShader3Dをコピペして、名前をInitToonShade()に変更
-HRESULT Direct3D::InitToonShade()
+/*HRESULT Direct3D::InitToonShade()
 {
 	using namespace Direct3D;
 	HRESULT hr;
@@ -465,7 +465,7 @@ HRESULT Direct3D::InitToonOutline()
 	}
 
 	return S_OK;
-}
+}*/
 
 HRESULT Direct3D::InitNormalMap()
 {

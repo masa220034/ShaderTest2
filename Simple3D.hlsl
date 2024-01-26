@@ -101,12 +101,12 @@ float4 PS(VS_OUT inData) : SV_Target
 
 	if (isTextured == 0)
 	{
-		diffuse = lightSource * diffuseColor * tI;
+		diffuse = lightSource * diffuseColor * inData.color;
 		ambient = lightSource * diffuseColor * ambientColor;
 	}
 	else
 	{
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * tI;
+		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
 		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
 	}
 	return diffuse + ambient + specular;

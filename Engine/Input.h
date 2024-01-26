@@ -2,6 +2,10 @@
 
 #include <dInput.h>
 
+#ifndef DIRECTINPUT_VERSION
+#define DIRECTINPUT_VERSION 0x0800
+#endif
+
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dInput8.lib")
 
