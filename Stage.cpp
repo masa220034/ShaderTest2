@@ -37,14 +37,14 @@ Stage::~Stage()
 void Stage::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("assets/Donuts.fbx");
+    hModel_ = Model::Load("assets/ball.fbx");
     hGround_ = Model::Load("assets/Ground.fbx");
     hLightBall_ = Model::Load("assets/LightBall.fbx");
 
     assert(hModel_ >= 0);
     assert(hGround_ >= 0);
     assert(hLightBall_ >= 0);
-    Camera::SetPosition(XMVECTOR{ 0, 10, -20, 0 });
+    Camera::SetPosition(XMVECTOR{ 0, 1, -5, 0 });
     Camera::SetTarget(XMVECTOR{ 0, 2, 0, 0 });
     trDonuts.position_ = { 0, 2, 0 };
     trDonuts.rotate_ = { 0, 0, 0 };
@@ -54,9 +54,9 @@ void Stage::Initialize()
     trGround.rotate_ = { 0, 0, 0 };
     trGround.scale_ = { 10, 10, 10 };
 
-    trLightBall.position_ = { 0, 0, 0 };
+    trLightBall.position_ = { 1, 1, 2 };
     trLightBall.rotate_ = { 0, 0, 0 };
-    trLightBall.scale_ = { 0.4, 0.4, 0.4 };
+    trLightBall.scale_ = { 0.4f, 0.4f, 0.4f };
     Instantiate<Arrow>(this);
     IntConstantBuffer();
 }
@@ -70,7 +70,7 @@ void Stage::Update()
         Model::ToggleRenderState();
     }
     
-    trDonuts.rotate_.y += 0.5f;
+    //trDonuts.rotate_.y += 0.5f;
 
     if (Input::IsKey(DIK_RIGHT))
     {
