@@ -7,7 +7,7 @@
 using namespace DirectX;
 using namespace Camera;
 
-const XMFLOAT4 LIGHT_POSITION{ 1, 2, 1, 0 };
+//const XMFLOAT4 LIGHT_POSITION{ 1, 2, 1, 0 };
 
 Fbx::Fbx()
 	:vertexCount_(0), polygonCount_(0), materialCount_(0),
@@ -114,7 +114,7 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 		}
 		for (int j = 0; j < 3; j++)
 		{
-			int index = mesh->GetPolygonVertices()[startIndex * j];
+			int index = mesh->GetPolygonVertices()[startIndex + j];
 			vertices[index].tangent = XMVectorSet((float)tangent[0], (float)tangent[1], (float)tangent[2], 0.0f);
 		}
 	}

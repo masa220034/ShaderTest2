@@ -31,7 +31,7 @@ int Model::Load(std::string fileName)
 	}
 
 	modelList.push_back(pData);
-	return(modelList.size() - 1);
+	return((int)(modelList.size() - 1));
 }
 
 void Model::SetTransform(int hModel, Transform transform)

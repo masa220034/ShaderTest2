@@ -39,7 +39,7 @@ PS_IN VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 
 	outData.pos = mul(pos, matWVP);
 	//outData.pos = pos;
-	outData.uv = uv;
+	outData.uv = (float2)uv;
 	float4 normalout;
 	normalout = mul(normal, matNormal);
 	normalout.w = 0;
