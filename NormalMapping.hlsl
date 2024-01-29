@@ -38,7 +38,7 @@ struct VS_OUT
 	float4 eyev		:POSITION;  //ワールド座標に変換された視線ベクトル
 	float4 Neyev    :POSITION1; //ノーマルマップ用の接空間に返還されたベクトル
 	float4 normal	:NORMAL;
-	float4 light    :POSITION3;
+	float4 light    :POSITION2;
 	float4 color	:COLOR;	//色（明るさ）
 
 };
@@ -56,18 +56,17 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
 	outData.pos = mul(pos, matWVP);
 	outData.uv = (float2)uv;
 
-	float3  tmp = cross(tangent, normal);
-	float4 binormal = { tmp, 0 };
+	float3  binormal = cross(normal, tangent);
 	binormal = mul(binormal, matNormal);
 	binormal = normalize(binormal); //従法線ベクトルをローカル座標に変換したやつ
 
-	normal.w = 0;
 	outData.normal = normalize(mul(normal, matNormal)); //法線ベクトルをローカル座標に変換したやつ
-
+	normal.w = 0;
+	
 	tangent = mul(tangent, matNormal);
-	tangent.w = 0;
 	tangent = normalize(tangent);//接線ベクトルをローカル座標に変換したやつ
-
+	tangent.w = 0;
+	
 	float4 eye = normalize(mul(pos, matW) - eyePosition);
 	outData.eyev = eye; //ワールド座標の視線ベクトル
 
@@ -116,16 +115,16 @@ float4 PS(VS_OUT inData) : SV_Target
 
 		if (isTexture != 0)
 		{
-			diffuse = g_texture.Sample(g_sampler, inData.uv) * NL;
-			ambient = g_texture.Sample(g_sampler, inData.uv) * ambientColor;
+			diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * NL;
+			ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
 		}
 		else
 		{
-			diffuse = diffuseColor * NL;
-			ambient = diffuseColor * ambientColor;
+			diffuse = lightSource * diffuseColor * NL;
+			ambient = lightSource * diffuseColor * ambientColor;
 		}
 
-		return diffuse + ambient + specular;
+		return NL;
 	}
 	else
 	{
