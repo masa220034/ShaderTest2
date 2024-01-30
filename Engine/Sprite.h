@@ -12,9 +12,9 @@ class Sprite
 	//コンスタントバッファー
 	struct CONSTANT_BUFFER
 	{
-		XMMATRIX    world;    //頂点座標変換行列
-		XMMATRIX    uvTrans;  //テクスチャ座標変換行列
-		XMFLOAT4    color;    //テクスチャとの合成色
+		XMMATRIX	world;		// 頂点座標変換行列
+		XMMATRIX	uvTrans;	// テクスチャ座標変換行列
+		XMFLOAT4	color;		// テクスチャとの合成色
 	};
 
 	//頂点情報
@@ -37,7 +37,6 @@ protected:
 
 	Texture* pTexture_;		//テクスチャ
 
-
 public:
 	Sprite();
 	~Sprite();
@@ -53,11 +52,9 @@ public:
 
 	//解放
 	void Release();
-
 	//画像サイズの取得
 	//戻値：画像サイズ
 	XMFLOAT2 GetTextureSize() { return pTexture_->GetTextureSize(); }
-
 	//ロード
 	//引数：fileName	画像ファイル名
 	//戻値：成功/失敗
@@ -66,15 +63,14 @@ public:
 private:
 	//---------Initializeから呼ばれる関数---------
 	void InitVertexData();		//頂点情報の準備
-	//HRESULT CreateVertexBuffer();		//頂点バッファを作成
+	//HRESULT CreateVertexBuffer();		//頂点バッファを作成 InitVertexDataに吸収
 
 	void InitIndexData();		//インデックス情報を準備
-	//HRESULT CreateIndexBuffer();		//インデックスバッファを作成
+	//HRESULT CreateIndexBuffer();		//インデックスバッファを作成 InitIndexDataに吸収
 
 	HRESULT CreateConstantBuffer();		//コンスタントバッファ作成
 
 	HRESULT LoadTexture(std::string fileName);				//テクスチャをロード
-
 
 	//---------Draw関数から呼ばれる関数---------
 	void PassDataToCB(XMMATRIX worldMatrix);	//コンスタントバッファに各種情報を渡す
