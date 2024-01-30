@@ -14,6 +14,8 @@ namespace Direct3D
 	ID3D11Texture2D* pDepthStencil;				//深度ステンシル
 	ID3D11DepthStencilView* pDepthStencilView;	//深度ステンシルビュー
 
+	ID3D11BlendState* pBlendState;
+
 	struct SHADER_BUNDLE
 	{
 		ID3D11VertexShader* pVertexShader_ = nullptr;	//頂点シェーダー
@@ -22,6 +24,7 @@ namespace Direct3D
 		ID3D11RasterizerState* pRasterizerState_ = nullptr;	//ラスタライザー
 	};
 	SHADER_BUNDLE shaderBundle[SHADER_MAX];
+	SIZE screenSize;
 }
 
 
@@ -37,7 +40,6 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 
 	//とりあえず全部0
 	ZeroMemory(&scDesc, sizeof(scDesc));
-
 	//描画先のフォーマット
 	scDesc.BufferDesc.Width = winW;		//画面幅
 	scDesc.BufferDesc.Height = winH;	//画面高さ
@@ -130,6 +132,28 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	pDevice_->CreateTexture2D(&descDepth, NULL, &pDepthStencil);
 	pDevice_->CreateDepthStencilView(pDepthStencil, NULL, &pDepthStencilView);
 
+	//ブレンドステート
+	D3D11_BLEND_DESC BlendDesc;
+	ZeroMemory(&BlendDesc, sizeof(BlendDesc));
+	BlendDesc.AlphaToCoverageEnable = FALSE;
+	BlendDesc.IndependentBlendEnable = FALSE;
+	BlendDesc.RenderTarget[0].BlendEnable = TRUE;
+	//ソース側の設定
+	BlendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	BlendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+
+	BlendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	BlendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	BlendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	BlendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	BlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	pDevice_->CreateBlendState(&BlendDesc, &pBlendState);
+
+	float blendFactor[4] = { D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO };
+	pContext_->OMSetBlendState(pBlendState, blendFactor, 0xffffffff);
+
+
+
 
 	//データを画面に描画するための一通りの設定（パイプライン）
 	pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);  // データの入力種類を指定
@@ -143,6 +167,8 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 	{
 		return hr;
 	}
+
+	screenSize = { winW, winH };
 
 	return S_OK;
 }
@@ -298,7 +324,7 @@ HRESULT Direct3D::InitShader2D()
 	D3D11_RASTERIZER_DESC rdc = {};
 	rdc.CullMode = D3D11_CULL_BACK;
 	rdc.FillMode = D3D11_FILL_SOLID;
-	rdc.FrontCounterClockwise = FALSE;
+	rdc.FrontCounterClockwise = TRUE;
 	//rdc.ScissorEnable = false;
 	//rdc.MultisampleEnable = false;
 	hr = pDevice_->CreateRasterizerState(&rdc, &(shaderBundle[SHADER_2D].pRasterizerState_));
@@ -508,4 +534,20 @@ void Direct3D::Release()
 	SAFE_RELEASE(pSwapChain_);
 	SAFE_RELEASE(pContext_);
 	SAFE_RELEASE(pDevice_);
+}
+
+void Direct3D::SetDepthBafferWriteEnable(bool isWrite)
+{
+	//ON
+	if (isWrite)
+	{
+		//Zバッファ（デプスステンシルを指定する）
+		pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);
+	}
+
+	//OFF
+	else
+	{
+		pContext_->OMSetRenderTargets(1, &pRenderTargetView_, nullptr);
+	}
 }

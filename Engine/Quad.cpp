@@ -14,14 +14,11 @@ Quad::~Quad()
 
 HRESULT Quad::Initialize()
 {
-
-
 	InitVertexData();
 	if (FAILED(CreateVertexBuffer()))
 	{
 		return E_FAIL;
 	}
-
 
 	InitIndexData();
 	if (FAILED(CreateIndexBuffer()))
@@ -56,9 +53,6 @@ void Quad::Draw(Transform& transform)
 
 	//描画
 	Direct3D::pContext_->DrawIndexed((UINT)index_.size(), (UINT)0, 0);
-
-
-
 }
 
 void Quad::Release()
@@ -199,7 +193,6 @@ void Quad::PassDataToCB(Transform transform)
 	Direct3D::pContext_->PSSetShaderResources(0, 1, &pSRV);
 
 	Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開
-
 }
 
 //各バッファをパイプラインにセット
@@ -220,5 +213,4 @@ void Quad::SetBufferToPipeline()
 	Direct3D::pContext_->PSSetConstantBuffers(0, 1, &pConstantBuffer_);	//ピクセルシェーダー用
 
 	Direct3D::pContext_->DrawIndexed(indexNum_, 0, 0);
-
 }

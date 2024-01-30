@@ -79,7 +79,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
 	light.w = 0;
 	light = normalize(light);
 
-	outData.color = mul(normal, light);
+	outData.color = mul(light, outData.normal);
 	outData.color.w = 0.0;
 
 	outData.light.x = dot(light, tangent); //Ú‹óŠÔ‚ÌŒõŒ¹ƒxƒNƒgƒ‹
@@ -124,7 +124,8 @@ float4 PS(VS_OUT inData) : SV_Target
 			ambient = lightSource * diffuseColor * ambientColor;
 		}
 
-		return NL;
+		//return NL;
+		return diffuse + ambient + specular;
 	}
 	else
 	{
