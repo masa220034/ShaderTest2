@@ -1,14 +1,14 @@
 #pragma once
-//必要なインクルードを書く
+
 #include <string>
 #include <vector>
-#include "Fbx.h"
+#include "fbx.h"
 
 namespace Model
 {
 	struct ModelData
 	{
-		Fbx* pFbx_;
+		Fbx* pfbx_;
 		Transform transform_;//トランスフォーム
 		std::string filename_;
 	};

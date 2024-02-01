@@ -15,6 +15,7 @@ class Stage : public GameObject
     int hModel_;    //ƒ‚ƒfƒ‹”Ô†
     int hGround_;
     int hLightBall_;
+    int hWater_;
 
     Transform trDonuts;
     Transform trGround;

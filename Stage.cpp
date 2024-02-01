@@ -31,7 +31,7 @@ void Stage::IntConstantBuffer()
 
 //コンストラクタ
 Stage::Stage(GameObject* parent)
-    :GameObject(parent, "Stage"), hModel_(-1), hGround_(-1), lightSourcePosition_(DEF_LIGHT_POSITION), sprite_(nullptr)
+    :GameObject(parent, "Stage"), hModel_(-1), hGround_(-1), hWater_(-1), lightSourcePosition_(DEF_LIGHT_POSITION), sprite_(nullptr)
 {
 }
 
@@ -47,10 +47,12 @@ void Stage::Initialize()
     hModel_ = Model::Load("assets/ball.fbx");
     hGround_ = Model::Load("assets/Ground.fbx");
     hLightBall_ = Model::Load("assets/RedBall.fbx");
+    hWater_ = Model::Load("assets/Water.fbx");
 
     assert(hModel_ >= 0);
     assert(hGround_ >= 0);
     assert(hLightBall_ >= 0);
+    assert(hWater_ >= 0);
     Camera::SetPosition(XMVECTOR{ 0, 1, -15, 0 });
     Camera::SetTarget(XMVECTOR{ 0, 2, 0, 0 });
     trDonuts.position_ = { 0, 2, 0 };
@@ -157,6 +159,8 @@ void Stage::Draw()
     Model::SetTransform(hLightBall_, trLightBall);
     Model::Draw(hLightBall_);
 
+    Model::SetTransform(hWater_, transform_);
+    Model::Draw(hWater_);
     Transform t;
     t.position_ = { 0, 0, 0 };
     t.scale_ = { 1.0, 1.0, 1.0 };
