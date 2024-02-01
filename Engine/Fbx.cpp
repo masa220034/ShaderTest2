@@ -16,7 +16,6 @@ Fbx::Fbx()
 {
 }
 
-
 HRESULT Fbx::Load(std::string fileName)
 {
 	//マネージャを生成
@@ -114,7 +113,6 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 		}
 	}
 
-
 	//頂点バッファ
 	HRESULT hr;
 	D3D11_BUFFER_DESC bd_vertex;
@@ -133,15 +131,12 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 	}
 }
 
-
-
 //インデックスバッファ準備
 void Fbx::InitIndex(fbxsdk::FbxMesh* mesh)
 {
 	pIndexBuffer_ = new ID3D11Buffer * [materialCount_];
 	indexCount_ = vector<int>(materialCount_);
 	//indexCount_  = new int[materialCount_]
-
 
 	vector<int> index(polygonCount_ * 3);//ポリゴン数*3＝全頂点分用意
 	//int* index = new int[polygonCount_ * 3];
@@ -219,10 +214,8 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 
 		FbxSurfacePhong* pPhong = (FbxSurfacePhong*)pMaterial;
 
-
 		FbxDouble3  diffuse = pPhong->Diffuse;
 		FbxDouble3  ambient = pPhong->Ambient;
-
 
 		pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
 		pMaterialList_[i].ambiemt = XMFLOAT4((float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f);
@@ -239,7 +232,6 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			FbxDouble shininess = pPhong->Shininess;
 			pMaterialList_[i].shininess = (float)shininess;
 		}
-
 
 		{
 			//テクスチャ情報
