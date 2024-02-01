@@ -20,6 +20,7 @@ HRESULT Quad::Initialize()
 		return E_FAIL;
 	}
 
+
 	InitIndexData();
 	if (FAILED(CreateIndexBuffer()))
 	{
@@ -42,7 +43,6 @@ HRESULT Quad::Initialize()
 
 void Quad::Draw(Transform& transform)
 {
-
 	Direct3D::SetShader(SHADER_3D);
 	transform.Calclation();//トランスフォームを計算
 	//コンスタントバッファに情報を渡す
@@ -64,7 +64,7 @@ void Quad::Release()
 
 void Quad::InitVertexData()
 {
-	HRESULT hr;
+	//HRESULT hr;
 	// 頂点情報
 	vertices_ =
 	{
@@ -132,7 +132,6 @@ HRESULT Quad::CreateIndexBuffer()
 	return S_OK;
 }
 
-
 //コンスタントバッファ作成
 HRESULT Quad::CreateConstantBuffer()
 {
@@ -169,7 +168,6 @@ HRESULT Quad::LoadTexture()
 	}
 	return S_OK;
 }
-
 
 //コンスタントバッファに各種情報を渡す
 void Quad::PassDataToCB(Transform transform)

@@ -5,7 +5,6 @@
 
 #pragma comment(lib,"DirectXTex.lib")
 
-
 Texture::Texture()
 	:pSampler_(nullptr), pSRV_(nullptr)
 {
@@ -62,8 +61,6 @@ HRESULT Texture::Load(string filename)
 	}
 	return S_OK;
 }
-
-
 
 void Texture::Release()
 {

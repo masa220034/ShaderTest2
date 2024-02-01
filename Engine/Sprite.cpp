@@ -1,6 +1,7 @@
 #include "Sprite.h"
 #include "Camera.h"
 
+
 //コンストラクタ
 Sprite::Sprite() :
 	vertexNum_(0), pVertexBuffer_(nullptr),
@@ -25,7 +26,6 @@ HRESULT Sprite::Initialize()
 	//インデックス情報
 	InitIndexData();					//データを用意して
 
-
 	//コンスタントバッファ作成
 	if (FAILED(CreateConstantBuffer()))
 	{
@@ -41,12 +41,10 @@ HRESULT Sprite::Initialize()
 	return S_OK;
 }
 
-
 //描画
 void Sprite::Draw(Transform& transform)
 {
 	Direct3D::SetShader(SHADER_2D);
-
 
 	transform.Calclation();//トランスフォームを計算
 
@@ -263,7 +261,6 @@ void Sprite::PassDataToCB(XMMATRIX worldMatrix)
 	D3D11_MAPPED_SUBRESOURCE pdata;
 	Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
 	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
-
 
 	ID3D11SamplerState* pSampler = pTexture_->GetSampler();
 	Direct3D::pContext_->PSSetSamplers(0, 1, &pSampler);

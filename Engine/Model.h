@@ -8,7 +8,7 @@ namespace Model
 {
 	struct ModelData
 	{
-		Fbx* pfbx_;
+		Fbx* pFbx_;
 		Transform transform_;//トランスフォーム
 		std::string filename_;
 	};

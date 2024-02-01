@@ -40,8 +40,6 @@ void Model::SetTransform(int hModel, Transform transform)
 	//モデル番号は、modelListのインデックス
 }
 
-
-
 Fbx* Model::GetModel(int _hModel)
 {
 	return modelList[_hModel]->pFbx_;
