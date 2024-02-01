@@ -44,9 +44,9 @@ Stage::~Stage()
 void Stage::Initialize()
 {
     //モデルデータのロード
-    hModel_ = Model::Load("assets/ball.fbx");
+    hModel_ = Model::Load("assets/Ball.fbx");
     hGround_ = Model::Load("assets/Ground.fbx");
-    hLightBall_ = Model::Load("assets/RedBall.fbx");
+    hLightBall_ = Model::Load("assets/LightBall.fbx");
     hWater_ = Model::Load("assets/Water.fbx");
 
     assert(hModel_ >= 0);
@@ -154,8 +154,8 @@ void Stage::Draw()
     //q->Draw(transform_);
     Model::SetTransform(hModel_, trDonuts);
     Model::Draw(hModel_);
-    //Model::SetTransform(hGround_, trGround);
-    //Model::Draw(hGround_);
+    Model::SetTransform(hGround_, trGround);
+    Model::Draw(hGround_);
     Model::SetTransform(hLightBall_, trLightBall);
     Model::Draw(hLightBall_);
 
