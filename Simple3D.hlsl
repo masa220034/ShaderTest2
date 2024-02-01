@@ -4,8 +4,6 @@
 Texture2D		g_texture : register(t0);	//テクスチャー
 SamplerState	g_sampler : register(s0);	//サンプラー
 
-//Texture2D		g_toon_texture : register(t1);
-
 //───────────────────────────────────────
 // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
@@ -83,7 +81,6 @@ float4 PS(VS_OUT inData) : SV_Target
 	//float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
 	float4 reflection = reflect(normalize(-lightPosition), inData.normal);
 	float4 specular = pow(saturate(dot(reflection, normalize(inData.eyev))), shininess) * specularColor;
-
 	if (isTextured == 0)
 	{
 		diffuse = lightSource * diffuseColor * inData.color;

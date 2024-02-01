@@ -11,36 +11,36 @@ Texture2D		normalTex : register(t1);
 //───────────────────────────────────────
 cbuffer gmodel:register(b0)
 {
-	float4x4	matWVP;			 // ワールド・ビュー・プロジェクションの合成行列
-	float4x4	matW;            // ワールド行列
-	float4x4	matNormal;       // ワールド行列
-	float4		diffuseColor;	 //マテリアルの色＝拡散反射係数
-	float4		ambientColor;	 //環境光
-	float4		specularColor;	 //鏡面反射＝ハイライト
-	float		shininess;
-	int		    isTexture;		 //テクスチャーが貼られているかどうか
-	int         isNormalMap;     //ノーマルマップがあるかどうか
+	float4x4	matWVP;			// ワールド・ビュー・プロジェクションの合成行列
+	float4x4	matW;           // ワールド行列
+	float4x4	matNormal;           //ノーマルのローカルへの変換行列から平行移動成分をとったやつ
+	float4		diffuseColor;		//マテリアルの色＝拡散反射係数
+	float4		ambientColor;		//環境光
+	float4		specularColor;		//鏡面反射＝ハイライトの係数
+	float		shininess;			//ハイライトの広がりの大きさ
+	int		isTexture;			//テクスチャーが貼られているかどうか
+	int		isNormalMap;		//ノーマルマップがあるかどうか
 };
 
 cbuffer gmodel:register(b1)
 {
-	float4		lightPosition;
-	float4		eyePosition;
+	float4		lightPosition;		//光源の位置（平行光源の時は、その位置から原点へのベクトル
+	float4		eyePosition;		//視点位置＝カメラ位置
 };
+
 
 //───────────────────────────────────────
 // 頂点シェーダー出力＆ピクセルシェーダー入力データ構造体
 //───────────────────────────────────────
 struct VS_OUT
 {
-	float4 pos  : SV_POSITION;	//位置
+	float4 pos  : SV_POSITION;	//ピクセル位置
 	float2 uv	: TEXCOORD;		//UV座標
-	float4 eyev		:POSITION;  //ワールド座標に変換された視線ベクトル
-	float4 Neyev    :POSITION1; //ノーマルマップ用の接空間に返還されたベクトル
-	float4 normal	:NORMAL;
-	float4 light    :POSITION2;
-	float4 color	:COLOR;	//色（明るさ）
-
+	float4 eyev		:POSITION;	//ワールド座標に変換された視線ベクトル
+	float4 Neyev	:POSITION1; //ノーマルマップ用の接空間に変換された視線ベクトル
+	float4 normal	:NORMAL;	//法線ベクトル
+	float4 light	:POSITION2; //ライトを接空間に変換したベクトル
+	float4 color	:COLOR; //通常のランバートモデルの拡散反射の色
 };
 
 //───────────────────────────────────────
@@ -56,21 +56,21 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
 	outData.pos = mul(pos, matWVP);
 	outData.uv = (float2)uv;
 
-	float3  binormal = cross(normal, tangent);
+	float3  binormal = cross(tangent, normal);
 	binormal = mul(binormal, matNormal);
 	binormal = normalize(binormal); //従法線ベクトルをローカル座標に変換したやつ
 
 	outData.normal = normalize(mul(normal, matNormal)); //法線ベクトルをローカル座標に変換したやつ
-	normal.w = 0;
-	
-	tangent = mul(tangent, matNormal);
-	tangent = normalize(tangent);//接線ベクトルをローカル座標に変換したやつ
-	tangent.w = 0;
-	
-	float4 eye = normalize(mul(pos, matW) - eyePosition);
-	outData.eyev = eye; //ワールド座標の視線ベクトル
+	outData.normal.w = 0;
 
-	outData.Neyev.x = dot(eye, tangent);
+	tangent = mul(tangent, matNormal);
+	tangent = normalize(tangent); //接線ベクトルをローカル座標に変換したやつ
+	tangent.w = 0;
+
+	float4 eye = normalize(mul(pos, matW) - eyePosition); //ワールド座標の視線ベクトル
+	outData.eyev = eye;
+
+	outData.Neyev.x = dot(eye, tangent);//接空間の視線ベクトル
 	outData.Neyev.y = dot(eye, binormal);
 	outData.Neyev.z = dot(eye, outData.normal);
 	outData.Neyev.w = 0;
@@ -82,7 +82,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL, f
 	outData.color = mul(light, outData.normal);
 	outData.color.w = 0.0;
 
-	outData.light.x = dot(light, tangent); //接空間の光源ベクトル
+	outData.light.x = dot(light, tangent);//接空間の光源ベクトル
 	outData.light.y = dot(light, binormal);
 	outData.light.z = dot(light, outData.normal);
 	outData.light.w = 0;
@@ -112,7 +112,6 @@ float4 PS(VS_OUT inData) : SV_Target
 		float4 reflection = reflect(normalize(inData.light), tmpNormal);
 		float4 specular = pow(saturate(dot(reflection, normalize(inData.Neyev))), shininess) * specularColor;
 
-
 		if (isTexture != 0)
 		{
 			diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * NL;
@@ -123,9 +122,7 @@ float4 PS(VS_OUT inData) : SV_Target
 			diffuse = lightSource * diffuseColor * NL;
 			ambient = lightSource * diffuseColor * ambientColor;
 		}
-
-		//return NL;
-		return diffuse + ambient + specular;
+		return  diffuse + ambient + specular;
 	}
 	else
 	{

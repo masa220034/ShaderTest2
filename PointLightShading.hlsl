@@ -32,7 +32,7 @@ struct PS_IN
 //───────────────────────────────────────
 // 頂点シェーダ
 //───────────────────────────────────────
-PS_IN VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
+PS_IN VS(float4 pos : POSITION, float2 uv : TEXCOORD, float4 normal : NORMAL)
 {
 	//ピクセルシェーダーへ渡す情報
 	PS_IN outData = (PS_IN)0;
@@ -58,15 +58,13 @@ PS_IN VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(PS_IN inData) : SV_Target
 {
-
 	float len = length(inData.light); // 光の方向ベクトルを正規化(大きさを 1 にし
 
 	float NL = saturate(dot(inData.normal, inData.light));
 	float k = 1.0f / (1.0 * len * len);
 
-	float3 reflect = normalize(2 * NL * inData.normal - inData.light);
+	float4 reflect = normalize(2 * NL * inData.normal - inData.light);
 	float4 specular = pow(saturate(dot(reflect, inData.eyev)), 8);
-
 
 	float4 lightSource = { 1,1,1,1 };//光の色
 	float4 ambientSource = { 1,1,1,1 };//環境光の色
