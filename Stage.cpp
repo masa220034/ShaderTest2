@@ -53,7 +53,7 @@ void Stage::Initialize()
     assert(hLightBall_ >= 0);
     Camera::SetPosition(XMVECTOR{ 0, 1, -15, 0 });
     Camera::SetTarget(XMVECTOR{ 0, 2, 0, 0 });
-    trDonuts.position_ = { 0, 2, 0 };
+    trDonuts.position_ = { 0, 2, 7 };
     trDonuts.rotate_ = { 0, 0, 0 };
     trDonuts.scale_ = { 1,1,1 };
 
@@ -147,8 +147,6 @@ void Stage::Update()
 //•`‰æ
 void Stage::Draw()
 {
-
-
     //q->Draw(transform_);
     Model::SetTransform(hModel_, trDonuts);
     Model::Draw(hModel_);
@@ -158,7 +156,7 @@ void Stage::Draw()
     Model::Draw(hLightBall_);
 
     Transform t;
-    t.position_ = { -0, -0, -0 };
+    t.position_ = { 0, 0, 0 };
     t.scale_ = { 1.0, 1.0, 1.0 };
     t.rotate_ = { 0,0,0 };
     RECT rec{ 0, 0, 300, 300 };
