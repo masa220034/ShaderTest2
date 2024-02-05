@@ -158,7 +158,7 @@ void Stage::Draw()
     Model::Draw(hLightBall_);
 
     Transform t;
-    t.position_ = { 0, 0, 0 };
+    t.position_ = { -0, -0, -0 };
     t.scale_ = { 1.0, 1.0, 1.0 };
     t.rotate_ = { 0,0,0 };
     RECT rec{ 0, 0, 300, 300 };
