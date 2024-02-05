@@ -24,8 +24,6 @@
     <FxCompile Include="Simple3D.hlsl" />
     <FxCompile Include="Simple2D.hlsl" />
     <FxCompile Include="PointLightShading.hlsl" />
-    <FxCompile Include="Toon.hlsl" />
-    <FxCompile Include="ToonOutline.hlsl" />
     <FxCompile Include="NormalMapping.hlsl" />
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +81,9 @@
     <ClCompile Include="Arrow.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="transDice.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestScene.h">
@@ -131,6 +132,9 @@
       <Filter>ヘッダー ファイル\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Arrow.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="transDice.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
